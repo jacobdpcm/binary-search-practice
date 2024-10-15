@@ -6,7 +6,104 @@
 </head>
 <body>
   <script>
+    function newNode(_key){
+      let key = _key;
+      let left = null;
+      let right = null;
 
+      return {key, left, right};
+    }
+
+    function Tree(array){
+      let raw = array;
+      let root = null;
+
+      const insert = (value, currentNode) => {
+        if(root === null){
+          root = newNode(value);
+          return;
+        }
+        else if(value === currentNode.key){return;}
+        else if(value < currentNode.key){
+          if(currentNode.left === null){currentNode.left = newNode(value);}
+          else insert(value, currentNode.left);
+        }
+        else if(value > currentNode.key){
+          if(currentNode.right === null){currentNode.right = newNode(value)}
+          else insert(value, currentNode.right);
+        }
+      }
+
+      //build the initial tree:
+      raw.forEach(value => {
+        insert(value, root);
+      });
+
+      const deleteItem = (value, currentNode, previousNode = null) => {
+        //iterate until finding the value:
+        if(currentNode === null) return;
+        if(value < currentNode.key){
+          deleteItem(value,currentNode.left, currentNode);
+          return;
+        }
+        if(value > currentNode.key){
+          deleteItem(value,currentNode.right, currentNode);
+          return;
+        }
+
+        //Run deletion:
+        if(value === currentNode.key){
+          let isLeftChild;
+          (currentNode.key < previousNode.key) ? isLeftChild = true : isLeftChild = false; //determine which child the deletion node is
+
+          //if leaf:
+          if(currentNode.left === null && currentNode.right === null){
+            isLeftChild ? previousNode.left = null : previousNode.right = null;
+            return;
+          }
+
+          //one child:
+          if(currentNode.left !== null && currentNode.right === null){
+            isLeftChild ? previousNode.left = currentNode.left : previousNode.right = currentNode.left;
+          }
+          if(currentNode.left === null && currentNode.right !== null){
+            isLeftChild ? previousNode.left = currentNode.right : previousNode.right = currentNode.right;
+          }
+
+          //two childs the doozy:
+          if(currentNode.left !== null && currentNode.right !== null){
+            let replacementNode = currentNode.right;
+            while(replacementNode.left !== null){
+              replacementNode = replacementNode.left; //CONTINUE DOOZY DELETION HERE
+            }
+          }
+        }
+      }
+
+      //Odin gave me this to view the tree:
+      const prettyPrint = (node, prefix = "", isLeft = true) => {
+        if (node === null) {
+          return;
+        }
+        if (node.right !== null) {
+          prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+        }
+        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.key}`);
+        if (node.left !== null) {
+          prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+        }
+      };
+
+      
+      const getRoot = () => {return root;}
+
+      return {insert, prettyPrint, getRoot}
+    }
+
+    
+
+    test = Tree([9, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+    test.prettyPrint(test.getRoot())
   </script>  
 </body>
 </html>
