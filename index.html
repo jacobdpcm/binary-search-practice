@@ -41,7 +41,7 @@
 
       const deleteItem = (value, currentNode, previousNode = null) => {
         //iterate until finding the value:
-        if(currentNode === null) return;
+        if(currentNode === null) return test.prettyPrint(test.getRoot());;
         if(value < currentNode.key){
           deleteItem(value,currentNode.left, currentNode);
           return;
@@ -59,26 +59,46 @@
           //if leaf:
           if(currentNode.left === null && currentNode.right === null){
             isLeftChild ? previousNode.left = null : previousNode.right = null;
-            return;
+            return test.prettyPrint(test.getRoot());
           }
 
           //one child:
           if(currentNode.left !== null && currentNode.right === null){
             isLeftChild ? previousNode.left = currentNode.left : previousNode.right = currentNode.left;
+            return test.prettyPrint(test.getRoot());
           }
           if(currentNode.left === null && currentNode.right !== null){
             isLeftChild ? previousNode.left = currentNode.right : previousNode.right = currentNode.right;
+            return test.prettyPrint(test.getRoot());
           }
 
           //two childs the doozy:
           if(currentNode.left !== null && currentNode.right !== null){
+            console.log('yep');
             let replacementNode = currentNode.right;
+            console.log(replacementNode)
             while(replacementNode.left !== null){
-              replacementNode = replacementNode.left; //CONTINUE DOOZY DELETION HERE
+              replacementNode = replacementNode.left; 
             }
+            console.log(replacementNode)
+            let rightBranchHolder = replacementNode.right;
+            replacementNode.left = currentNode.left;
+            replacementNode.right = currentNode.right;
+            deleteItem(replacementNode.key, replacementNode.right, replacementNode); //SOMETHING IS WEIRD HERE delete the replacement's original spot
+            isLeftChild ? previousNode.left = replacementNode : previousNode.right = replacementNode; //Append final
+            return test.prettyPrint(test.getRoot());
           }
         }
       }
+
+      /*
+      replacement logic:
+      1. find the node that will replace the deletion node (the left most node of the right branch)
+          -copy that node to be worked on
+      2. copy the deletion node's left branch to be the replacement node's left branch
+      3. copy the deletion node's right branch to be the replacement node's right branch
+      4. fix the replacement node's original location to be null or it's original right branch
+      */
 
       //Odin gave me this to view the tree:
       const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -97,12 +117,12 @@
       
       const getRoot = () => {return root;}
 
-      return {insert, prettyPrint, getRoot}
+      return {insert, deleteItem, prettyPrint, getRoot}
     }
 
     
 
-    test = Tree([9, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+    test = Tree([9, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 34, 54, 21, 23, 45, 76, 56, 54, 32, 35, 25, 22, 21, 32, 36]);
     test.prettyPrint(test.getRoot())
   </script>  
 </body>
