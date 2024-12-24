@@ -39,9 +39,9 @@
         insert(value, root);
       });
 
-      const deleteItem = (value, currentNode, previousNode = null) => {
+      const deleteItem = (value, currentNode, previousNode = root) => {
         //iterate until finding the value:
-        if(currentNode === null) return test.prettyPrint(test.getRoot());;
+        if(currentNode === null) return;
         if(value < currentNode.key){
           deleteItem(value,currentNode.left, currentNode);
           return;
@@ -53,22 +53,27 @@
 
         //Run deletion:
         if(value === currentNode.key){
+          let isRoot;
+          (currentNode.key === root.key) ? isRoot = true : isRoot = false; //check for root
           let isLeftChild;
           (currentNode.key < previousNode.key) ? isLeftChild = true : isLeftChild = false; //determine which child the deletion node is
 
           //if leaf:
           if(currentNode.left === null && currentNode.right === null){
-            isLeftChild ? previousNode.left = null : previousNode.right = null;
+            if(!isRoot){isLeftChild ? previousNode.left = null : previousNode.right = null;}
+            else {root = null};
             return test.prettyPrint(test.getRoot());
           }
 
           //one child:
           if(currentNode.left !== null && currentNode.right === null){
-            isLeftChild ? previousNode.left = currentNode.left : previousNode.right = currentNode.left;
+            if(!isRoot){isLeftChild ? previousNode.left = currentNode.left : previousNode.right = currentNode.left;}
+            else {root = currentNode.left};
             return test.prettyPrint(test.getRoot());
           }
           if(currentNode.left === null && currentNode.right !== null){
-            isLeftChild ? previousNode.left = currentNode.right : previousNode.right = currentNode.right;
+            if(!isRoot){isLeftChild ? previousNode.left = currentNode.right : previousNode.right = currentNode.right;}
+            else {root = currentNode.right};
             return test.prettyPrint(test.getRoot());
           }
 
@@ -76,16 +81,26 @@
           if(currentNode.left !== null && currentNode.right !== null){
             console.log('yep');
             let replacementNode = currentNode.right;
-            console.log(replacementNode)
+            let previousReplacementNode = null;
+            console.log(replacementNode)                          //SET UP MORE ROOT CONDITIONS
             while(replacementNode.left !== null){
+              previousReplacementNode = replacementNode;
               replacementNode = replacementNode.left; 
             }
             console.log(replacementNode)
-            let rightBranchHolder = replacementNode.right;
-            replacementNode.left = currentNode.left;
-            replacementNode.right = currentNode.right;
-            deleteItem(replacementNode.key, replacementNode.right, replacementNode); //SOMETHING IS WEIRD HERE delete the replacement's original spot
-            isLeftChild ? previousNode.left = replacementNode : previousNode.right = replacementNode; //Append final
+
+            //create the new post deletion node
+            let replacementNodePlaceholder = replacementNode;
+            if(previousReplacementNode !== null){       //remove the replacement node from its current location
+              if(replacementNode.right !== null){previousReplacementNode.left = replacementNode.right;}
+              else previousReplacementNode.left = null;
+            } else {currentNode.right = replacementNode.right}
+            replacementNodePlaceholder.left = currentNode.left;
+            replacementNodePlaceholder.right = currentNode.right;
+            console.log(replacementNodePlaceholder);
+
+            if(!isRoot){isLeftChild ? previousNode.left = replacementNodePlaceholder : previousNode.right = replacementNodePlaceholder;} //Append final
+            else {root = replacementNodePlaceholder} // SOMETHING HERE FORGOT WHAT AND TOO BUSY ATM
             return test.prettyPrint(test.getRoot());
           }
         }
