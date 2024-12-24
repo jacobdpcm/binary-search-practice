@@ -106,6 +106,13 @@
         }
       }
 
+      const find = (value, currentNode) => {
+        if(currentNode === null){return};
+        if(currentNode.key === value){console.log(currentNode)};
+        if(currentNode.key < value){find(value, currentNode.right)};
+        if(currentNode.key > value){find(value, currentNode.left)};
+      }
+
       /*
       replacement logic:
       1. find the node that will replace the deletion node (the left most node of the right branch)
@@ -132,7 +139,7 @@
       
       const getRoot = () => {return root;}
 
-      return {insert, deleteItem, prettyPrint, getRoot}
+      return {insert, deleteItem, prettyPrint, getRoot, find}
     }
 
     
