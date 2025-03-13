@@ -106,11 +106,68 @@
         }
       }
 
-      const find = (value, currentNode) => {
+      const find = (value, currentNode = getRoot()) => {
         if(currentNode === null){return};
         if(currentNode.key === value){console.log(currentNode)};
         if(currentNode.key < value){find(value, currentNode.right)};
         if(currentNode.key > value){find(value, currentNode.left)};
+      }
+
+      const levelOrder = (callback) => {
+        if(root === null) return;
+        let queue = [root];
+        let currentNode;
+        while(queue.length !== 0){
+          currentNode = queue.shift()
+          console.log(currentNode);
+          if(currentNode.left !== null) {queue.push(currentNode.left)};
+          if(currentNode.right !== null) {queue.push(currentNode.right)};
+          callback(currentNode);
+        }
+        test.prettyPrint(test.getRoot())
+      }
+
+      const inOrder = (callback, currentNode = root) => {
+        if(currentNode === null) return;
+        if(currentNode.left !== null) inOrder(callback, currentNode.left);
+        console.log(currentNode);
+        callback(currentNode);
+        if(currentNode.right !== null) inOrder(callback, currentNode.right);
+      }
+
+      const preOrder = (callback, currentNode = root) => {
+        if(currentNode === null) return;
+        console.log(currentNode);
+        callback(currentNode);
+        if(currentNode.left !== null) preOrder(callback, currentNode.left);
+        if(currentNode.right !== null) preOrder(callback, currentNode.right);
+      }
+
+      const postOrder = (callback, currentNode = root) => {
+        if(currentNode === null) return;
+        if(currentNode.left !== null) postOrder(callback, currentNode.left);
+        if(currentNode.right !== null) postOrder(callback, currentNode.right);
+        console.log(currentNode);
+        callback(currentNode);
+      }
+
+      const callbackTest = (node) => {
+        node.key++
+      };
+
+      const height = (currentNode = root) => {
+        if(root === null) return;
+
+        let leftHeight;
+        let rightHeight;
+        let nodeHeight;
+
+        if(currentNode.left === null){leftHeight = 0}
+        else leftHeight = height(currentNode.left);
+        if(currentNode.right === null){rightHeight = 0}
+        else rightHeight = height(currentNode.right);
+        nodeHeight = Math.max(leftHeight, rightHeight) + 1;
+        return nodeHeight;
       }
 
       /*
@@ -139,7 +196,7 @@
       
       const getRoot = () => {return root;}
 
-      return {insert, deleteItem, prettyPrint, getRoot, find}
+      return {insert, deleteItem, prettyPrint, getRoot, find, levelOrder, callbackTest, inOrder, preOrder, postOrder, height}
     }
 
     
