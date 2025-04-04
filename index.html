@@ -108,7 +108,10 @@
 
       const find = (value, currentNode = getRoot()) => {
         if(currentNode === null){return};
-        if(currentNode.key === value){console.log(currentNode)};
+        if(currentNode.key === value){
+          console.log(currentNode);
+          return currentNode;
+        };
         if(currentNode.key < value){find(value, currentNode.right)};
         if(currentNode.key > value){find(value, currentNode.left)};
       }
@@ -170,6 +173,23 @@
         return nodeHeight;
       }
 
+      const depth = (targetNodeValue, currentNode = root, depthLevel = 0) => {
+        console.log('test');
+        if(root === null) return;
+        if(targetNodeValue < currentNode.key){
+          depth(targetNodeValue, currentNode.left, (depthLevel + 1));
+          return;
+        };
+        if(targetNodeValue > currentNode.key){
+          depth(targetNodeValue, currentNode.right, (depthLevel + 1))
+          return;
+        };
+        if(currentNode.key === targetNodeValue){
+          console.log(depthLevel);
+          return depthLevel;
+        };
+      }
+
       /*
       replacement logic:
       1. find the node that will replace the deletion node (the left most node of the right branch)
@@ -196,7 +216,7 @@
       
       const getRoot = () => {return root;}
 
-      return {insert, deleteItem, prettyPrint, getRoot, find, levelOrder, callbackTest, inOrder, preOrder, postOrder, height}
+      return {insert, deleteItem, prettyPrint, getRoot, find, levelOrder, callbackTest, inOrder, preOrder, postOrder, height, depth}
     }
 
     
